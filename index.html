@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes">
+    <title>Little Things, Big Feelings — Gửi Ká 20/10</title>
+    <!-- Tailwind CSS CDN với fallback dự phòng bảo vệ giao diện khi ngoại tuyến -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/3.4.1/tailwind.min.css" onerror="this.onerror=null;this.href='';">
+    <!-- Google Fonts: Be Vietnam Pro & Patrick Hand cho nét viết tay ấm áp -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Patrick+Hand&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --cream: #FFF7EA;
+            --blush: #F6DCE4;
+            --lavender: #E8DDF6;
+            --sage: #C9DCCB;
+            --rose: #C66F82;
+            --brown: #5C4A42;
+        }
+        body {
+            background-color: var(--cream);
+            color: var(--brown);
+            font-family: 'Be Vietnam Pro', sans-serif;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .font-hand {
+            font-family: 'Patrick Hand', cursive;
+        }
+        /* Custom Paper Texture Overlay */
+        .paper-texture {
+            background-color: var(--cream);
+            background-image: radial-gradient(rgba(92, 74, 66, 0.04) 1px, transparent 0);
+            background-size: 24px 24px;
+        }
+        /* Washi Tape Effect */
+        .washi-tape {
+            background: rgba(246, 220, 228, 0.65);
+            border-left: 2px dashed rgba(198, 111, 130, 0.3);
+            border-right: 2px dashed rgba(198, 111, 130, 0.3);
+            transform: rotate(-1.5deg);
+        }
+        .washi-tape-green {
+            background: rgba(201, 220, 203, 0.7);
+            border-left: 2px dashed rgba(100, 130, 105, 0.3);
+            border-right: 2px dashed rgba(100, 130, 105, 0.3);
+            transform: rotate(2deg);
+        }
+        /* Soft Paper Shadow */
+        .scrapbook-card {
+            background: #ffffff;
+            box-shadow: 0 10px 25px -5px rgba(92, 74, 66, 0.08), 0 8px 10px -6px rgba(92, 74, 66, 0.04);
+            border: 1px solid rgba(246, 220, 228, 0.6);
+        }
+        /* Gentle Animation Keyframes */
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-6px) rotate(1deg); }
+        }
+        .animate-float {
+            animation: floatSlow 4s ease-in-out infinite;
+        }
+        @keyframes pulseSoft {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.04); }
+        }
+        .animate-pulse-soft {
+            animation: pulseSoft 2.5s ease-in-out infinite;
+        }
+        /* Respect prefers-reduced-motion completely */
+        @media (prefers-reduced-motion: reduce) {
+            .animate-float, .animate-pulse-soft, .transition-all, .transition-transform, .transition-opacity {
+                animation: none !important;
+                transition: none !important;
+            }
+        }
+        /* Focus styles for accessibility */
+        button:focus-visible, a:focus-visible {
+            outline: 3px solid var(--rose);
+            outline-offset: 3px;
+        }
+    </style>
+</head>
+<body class="paper-texture min-h-screen flex flex-col justify-between selection:bg-[#F6DCE4] selection:text-[#5C4A42]">
+
+    <!-- Header Controls: Sound Toggle & Quick Status -->
+    <header class="w-full p-4 flex justify-between items-center max-w-lg mx-auto z-20">
+        <div class="flex items-center gap-2">
+            <span class="inline-block w-2.5 h-2.5 rounded-full bg-[#C66F82] animate-pulse"></span>
+            <span class="font-hand text-lg text-[#5C4A42]/80 tracking-wide">20.10 — Made for Ká</span>
+        </div>
+        <button id="soundToggleBtn" aria-label="Bật/Tắt âm thanh" class="px-3 py-1.5 rounded-full bg-white/80 border border-[#F6DCE4] text-xs font-medium text-[#5C4A42] shadow-sm hover:bg-[#F6DCE4]/50 transition-all flex items-center gap-1.5 cursor-pointer min-h-[40px] min-w-[40px] justify-center">
+            <svg id="soundIcon" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-[#C66F82]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
+            </svg>
+            <span id="soundText" class="font-hand text-sm">Âm thanh: Tắt</span>
+        </button>
+    </header>
+
+    <!-- Canvas for subtle confetti / floating hearts -->
+    <canvas id="effectCanvas" class="fixed inset-0 pointer-events-none z-30 w-full h-full"></canvas>
+
+    <!-- Main Container -->
+    <main class="w-full max-w-md mx-auto px-4 py-2 flex-grow flex flex-col items-center justify-center relative z-10">
+
+        <!-- STAGE 1: THE LITTLE ENVELOPE -->
+        <section id="stageEnvelope" class="w-full flex flex-col items-center text-center transition-all duration-500">
+            <div class="mb-4">
+                <p class="font-hand text-xl text-[#C66F82] tracking-wider uppercase">A Little Something For You</p>
+                <h1 class="text-2xl font-semibold text-[#5C4A42] mt-1">Ê, có cái này dành cho cậu nè ♡</h1>
+            </div>
+
+            <!-- Envelope Button Container (Semantic button for keyboard & touch accessibility) -->
+            <button type="button" class="relative w-full max-w-[320px] aspect-[4/3] scrapbook-card rounded-2xl p-6 flex flex-col items-center justify-center cursor-pointer animate-float my-6 group text-left" id="envelopeCard" aria-label="Mở phong thư chúc mừng 20/10">
+                <!-- Washi Tape decoration -->
+                <div class="absolute -top-3 left-1/2 -translate-x-1/2 w-24 h-6 washi-tape rounded-sm shadow-xs pointer-events-none"></div>
+
+                <!-- Envelope Graphic (SVG) -->
+                <div class="relative w-40 h-28 bg-[#F6DCE4] rounded-lg border-2 border-[#C66F82]/30 shadow-inner flex items-center justify-center group-hover:scale-105 transition-transform pointer-events-none">
+                    <!-- Envelope Flap -->
+                    <div class="absolute top-0 left-0 w-full h-14 bg-[#f0cbd6] origin-top border-b border-[#C66F82]/30 rounded-t-lg flex items-center justify-center transition-transform duration-500" id="envelopeFlap" style="clip-path: polygon(0 0, 50% 100%, 100% 0);"></div>
+                    <!-- Heart Seal -->
+                    <div class="absolute top-8 w-8 h-8 bg-[#C66F82] rotate-45 rounded-sm shadow-md flex items-center justify-center animate-pulse-soft">
+                        <span class="text-white text-xs -rotate-45 font-bold">♥</span>
+                    </div>
+                </div>
+
+                <span class="font-hand text-lg text-[#5C4A42] mt-6 group-hover:text-[#C66F82] transition-colors text-center w-full pointer-events-none">
+                    Chạm vào phong thư nhé ✨
+                </span>
+                <span class="text-xs text-[#5C4A42]/60 mt-1 font-medium text-center w-full pointer-events-none">20.10 — made with a little love</span>
+            </button>
+        </section>
+
+        <!-- STAGE 2: SCRAPBOOK DISCOVERY -->
+        <section id="stageScrapbook" class="w-full hidden flex-col items-center transition-all duration-500 py-2">
+            <div class="text-center mb-4">
+                <span class="inline-block px-3 py-1 rounded-full washi-tape-green text-xs font-hand tracking-wide text-[#5C4A42] mb-1">Khu vườn nhỏ của Ká</span>
+                <h2 class="text-xl font-semibold text-[#5C4A42]">Chạm vào những món đồ nhỏ bên dưới nha ♡</h2>
+                <p class="text-xs text-[#5C4A42]/70 mt-0.5">Khám phá các lời nhắn trước khi mở thiệp chính thức nhé!</p>
+            </div>
+
+            <!-- Scrapbook Grid of Stickers -->
+            <div class="w-full grid grid-cols-2 gap-3 my-3">
+                <!-- Sticker 1: Flower -->
+                <button type="button" class="scrapbook-card p-4 rounded-xl flex flex-col items-center text-center cursor-pointer hover:border-[#C66F82] transition-all group min-h-[110px] justify-center focus:ring-2 focus:ring-[#C66F82]" onclick="revealStickerMessage(0, 'Tặng cậu một bông hoa giấy nhỏ xinh nè ♡ Chúc cậu luôn rạng rỡ như thế!')">
+                    <div class="w-10 h-10 rounded-full bg-[#F6DCE4] flex items-center justify-center text-xl group-hover:scale-110 transition-transform mb-2 shadow-xs">
+                        🌸
+                    </div>
+                    <span class="font-hand text-base text-[#5C4A42]">Bông hoa nhỏ</span>
+                    <span class="text-[11px] text-[#C66F82] mt-0.5 opacity-80 group-hover:opacity-100">Chạm để xem →</span>
+                </button>
+
+                <!-- Sticker 2: Bow -->
+                <button type="button" class="scrapbook-card p-4 rounded-xl flex flex-col items-center text-center cursor-pointer hover:border-[#C66F82] transition-all group min-h-[110px] justify-center focus:ring-2 focus:ring-[#C66F82]" onclick="revealStickerMessage(1, 'Mong cậu hôm nay và mọi ngày đều gặp thật nhiều điều đáng yêu và may mắn!')">
+                    <div class="w-10 h-10 rounded-full bg-[#E8DDF6] flex items-center justify-center text-xl group-hover:scale-110 transition-transform mb-2 shadow-xs">
+                        🎀
+                    </div>
+                    <span class="font-hand text-base text-[#5C4A42]">Chiếc nơ hồng</span>
+                    <span class="text-[11px] text-[#C66F82] mt-0.5 opacity-80 group-hover:opacity-100">Chạm để xem →</span>
+                </button>
+
+                <!-- Sticker 3: Note -->
+                <button type="button" class="scrapbook-card p-4 rounded-xl flex flex-col items-center text-center cursor-pointer hover:border-[#C66F82] transition-all group min-h-[110px] justify-center focus:ring-2 focus:ring-[#C66F82]" onclick="revealStickerMessage(2, 'Nhớ dành thời gian chiều chuộng bản thân, ăn món ngon và cười thật tươi nha Ká!')">
+                    <div class="w-10 h-10 rounded-full bg-[#C9DCCB] flex items-center justify-center text-xl group-hover:scale-110 transition-transform mb-2 shadow-xs">
+                        💌
+                    </div>
+                    <span class="font-hand text-base text-[#5C4A42]">Mảnh giấy nhỏ</span>
+                    <span class="text-[11px] text-[#C66F82] mt-0.5 opacity-80 group-hover:opacity-100">Chạm để xem →</span>
+                </button>
+
+                <!-- Sticker 4: Heart -->
+                <button type="button" class="scrapbook-card p-4 rounded-xl flex flex-col items-center text-center cursor-pointer hover:border-[#C66F82] transition-all group min-h-[110px] justify-center focus:ring-2 focus:ring-[#C66F82]" onclick="revealStickerMessage(3, 'Cảm ơn vì sự tồn tại của cậu đã làm thế giới xung quanh nhẹ nhàng hơn rất nhiều.')">
+                    <div class="w-10 h-10 rounded-full bg-[#F6DCE4] flex items-center justify-center text-xl group-hover:scale-110 transition-transform mb-2 shadow-xs">
+                        💖
+                    </div>
+                    <span class="font-hand text-base text-[#5C4A42]">Trái tim nhỏ</span>
+                    <span class="text-[11px] text-[#C66F82] mt-0.5 opacity-80 group-hover:opacity-100">Chạm để xem →</span>
+                </button>
+            </div>
+
+            <!-- Sticker Message Display Box -->
+            <div id="stickerMsgBox" class="w-full bg-[#FFF3EE] border border-[#F6DCE4] rounded-xl p-3.5 my-2 text-center min-h-[60px] flex items-center justify-center transition-all opacity-0 scale-95">
+                <p id="stickerMsgText" class="font-hand text-lg text-[#5C4A42] italic">Bấm vào các món đồ ở trên để đọc lời nhắn nhé ♡</p>
+            </div>
+
+            <!-- Proceed to Final Card Button -->
+            <div class="w-full mt-4 flex justify-center">
+                <button type="button" id="toCardBtn" class="px-6 py-3 bg-[#C66F82] hover:bg-[#b05d6e] text-white font-medium rounded-full shadow-md transition-all flex items-center gap-2 cursor-pointer min-h-[44px]">
+                    <span>Mở tấm thiệp chính thức ♡</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- STAGE 3: THE FINAL GREETING CARD -->
+        <section id="stageFinalCard" class="w-full hidden flex-col items-center transition-all duration-500 py-1">
+            <!-- Final Card Wrapper -->
+            <div id="exportCardArea" class="w-full scrapbook-card rounded-2xl p-6 relative my-2 overflow-hidden border-2 border-[#F6DCE4]">
+                <!-- Decorative Washi Tape -->
+                <div class="absolute -top-3 left-1/2 -translate-x-1/2 w-28 h-6 washi-tape rounded-sm shadow-xs"></div>
+
+                <!-- Card Header -->
+                <div class="text-center mt-2 mb-3">
+                    <span class="font-hand text-xl text-[#C66F82]">Chúc mừng ngày 20/10 ♡</span>
+                    <h3 class="text-xl font-bold text-[#5C4A42] mt-0.5">Gửi Ká thân mến</h3>
+                </div>
+
+                <!-- Central Message Box (Mandatory & Exact wording) -->
+                <div class="bg-[#FFF9F5] border border-[#F6DCE4] rounded-xl p-4 my-2 text-center relative">
+                    <span class="absolute -top-3 left-4 text-[#C66F82] text-xl font-hand">“</span>
+                    <div id="typewriterContainer" class="font-hand text-xl sm:text-2xl text-[#5C4A42] leading-relaxed min-h-[70px] flex items-center justify-center">
+                        <!-- Typewriter text rendered via JS -->
+                        <span id="typewriterText"></span><span id="cursorSpan" class="inline-block w-0.5 h-6 bg-[#C66F82] ml-1 animate-pulse"></span>
+                    </div>
+                    <span class="absolute -bottom-4 right-4 text-[#C66F82] text-xl font-hand">”</span>
+                </div>
+
+                <!-- Supporting Gentle Wish beneath Central Message -->
+                <div class="text-center my-2 px-2">
+                    <p class="font-hand text-base text-[#5C4A42]/80 italic">Chúc cậu một ngày 20/10 thật nhiều niềm vui, bình an và luôn trân trọng bản thân mình nhé ✨</p>
+                </div>
+
+                <!-- Card Footer / Signature -->
+                <div class="flex justify-between items-center mt-4 pt-3 border-t border-[#F6DCE4]/60">
+                    <div class="flex items-center gap-1.5 text-xs text-[#5C4A42]/70 font-hand text-lg">
+                        <span>🌸</span> <span>20.10.2026</span>
+                    </div>
+                    <div class="text-right">
+                        <span class="font-hand text-xl text-[#C66F82] font-semibold block">— Ramril ♡</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Button: Replay Only -->
+            <div class="w-full flex justify-center items-center mt-4">
+                <button type="button" id="replayBtn" class="w-full sm:w-auto px-6 py-2.5 bg-white border border-[#C66F82]/40 hover:bg-[#F6DCE4]/30 text-[#5C4A42] font-medium rounded-full shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer min-h-[44px]">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-[#C66F82]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                    </svg>
+                    <span>Đọc lại lời chúc ♡</span>
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full py-4 text-center text-xs text-[#5C4A42]/60 z-10">
+        <p>Little Things, Big Feelings — Made with ♡ by Ramril</p>
+    </footer>
+
+    <!-- Application Script -->
+    <script>
+        /* --- CONFIGURATION --- */
+        const CONFIG = {
+            recipientName: "Ká",
+            senderName: "Ramril",
+            centralMessage: "Tôi không mua hoa tặng em được vì không thể tặng đám cỏ dại cho 1 đóa hoa."
+        };
+
+        /* --- STATE MANAGEMENT --- */
+        let currentStage = 1;
+        let soundEnabled = false;
+        let isTransitioning = false;
+        let typewriterTimer = null;
+
+        /* --- WEB AUDIO API SYNTHESIZER --- */
+        let audioCtx = null;
+        function initAudio() {
+            if (!audioCtx) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                if (AudioContext) {
+                    audioCtx = new AudioContext();
+                }
+            }
+            if (audioCtx && audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+        }
+
+        function playChimeSound() {
+            if (!soundEnabled || !audioCtx) return;
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(587.33, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.3);
+
+                gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
+
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.4);
+            } catch (e) {
+                console.warn("Audio playback prevented:", e);
+            }
+        }
+
+        /* --- SOUND TOGGLE HANDLER --- */
+        const soundToggleBtn = document.getElementById('soundToggleBtn');
+        const soundIcon = document.getElementById('soundIcon');
+        const soundText = document.getElementById('soundText');
+
+        soundToggleBtn.addEventListener('click', () => {
+            initAudio();
+            soundEnabled = !soundEnabled;
+            if (soundEnabled) {
+                soundText.textContent = "Âm thanh: Bật";
+                soundIcon.classList.remove('text-[#C66F82]/50');
+                soundIcon.classList.add('text-[#C66F82]');
+                playChimeSound();
+            } else {
+                soundText.textContent = "Âm thanh: Tắt";
+                soundIcon.classList.remove('text-[#C66F82]');
+                soundIcon.classList.add('text-[#C66F82]/50');
+            }
+        });
+
+        /* --- PARTICLES / CONFETTI SYSTEM (Capped at max 30 particles) --- */
+        const canvas = document.getElementById('effectCanvas');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+        let animationFrameId = null;
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        function createParticles(count = 8) {
+            // Respect prefers-reduced-motion
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+            
+            const colors = ['#C66F82', '#F6DCE4', '#E8DDF6', '#C9DCCB'];
+            const centerX = window.innerWidth / 2;
+            const centerY = window.innerHeight / 2;
+
+            // Enforce max 30 particles limit
+            const availableSlots = 30 - particles.length;
+            if (availableSlots <= 0) return;
+            const actualCount = Math.min(count, availableSlots);
+
+            for (let i = 0; i < actualCount; i++) {
+                particles.push({
+                    x: centerX + (Math.random() - 0.5) * 100,
+                    y: centerY + (Math.random() - 0.5) * 50,
+                    vx: (Math.random() - 0.5) * 6,
+                    vy: (Math.random() - 0.7) * 5 - 2,
+                    size: Math.random() * 6 + 4,
+                    color: colors[Math.floor(Math.random() * colors.length)],
+                    alpha: 1,
+                    decay: Math.random() * 0.02 + 0.015,
+                    shape: Math.random() > 0.5 ? 'heart' : 'circle'
+                });
+            }
+            startParticleLoop();
+        }
+
+        function startParticleLoop() {
+            if (animationFrameId) return;
+            animLoop();
+        }
+
+        function animLoop() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            if (particles.length === 0) {
+                animationFrameId = null;
+                return;
+            }
+
+            for (let i = particles.length - 1; i >= 0; i--) {
+                let p = particles[i];
+                p.x += p.vx;
+                p.y += p.vy;
+                p.vy += 0.15; // gravity
+                p.alpha -= p.decay;
+
+                if (p.alpha <= 0) {
+                    particles.splice(i, 1);
+                    continue;
+                }
+
+                ctx.save();
+                ctx.globalAlpha = p.alpha;
+                ctx.fillStyle = p.color;
+
+                if (p.shape === 'heart') {
+                    drawHeartPath(p.x, p.y, p.size);
+                } else {
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size * 0.6, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                ctx.restore();
+            }
+
+            animationFrameId = requestAnimationFrame(animLoop);
+        }
+
+        function drawHeartPath(x, y, size) {
+            ctx.beginPath();
+            let sz = size * 0.8;
+            ctx.moveTo(x, y + sz * 0.3);
+            ctx.bezierCurveTo(x, y, x - sz, y - sz, x - sz, y + sz * 0.3);
+            ctx.bezierCurveTo(x - sz, y + sz * 0.9, x, y + sz * 1.3, x, y + sz * 1.6);
+            ctx.bezierCurveTo(x, y + sz * 1.3, x + sz, y + sz * 0.9, x + sz, y + sz * 0.3);
+            ctx.bezierCurveTo(x + sz, y, x, y, x, y + sz * 0.3);
+            ctx.fill();
+        }
+
+        /* --- STAGE TRANSITIONS & LOGIC --- */
+        const stageEnvelope = document.getElementById('stageEnvelope');
+        const stageScrapbook = document.getElementById('stageScrapbook');
+        const stageFinalCard = document.getElementById('stageFinalCard');
+        const envelopeCard = document.getElementById('envelopeCard');
+        const envelopeFlap = document.getElementById('envelopeFlap');
+        const toCardBtn = document.getElementById('toCardBtn');
+        const replayBtn = document.getElementById('replayBtn');
+        const stickerMsgBox = document.getElementById('stickerMsgBox');
+        const stickerMsgText = document.getElementById('stickerMsgText');
+
+        function triggerEnvelopeAction() {
+            if (isTransitioning || currentStage !== 1) return;
+            isTransitioning = true;
+            initAudio();
+            playChimeSound();
+            createParticles(8);
+
+            // Open envelope flap animation
+            envelopeFlap.style.transform = "rotateX(180deg)";
+
+            setTimeout(() => {
+                stageEnvelope.classList.add('opacity-0', 'scale-95');
+                setTimeout(() => {
+                    stageEnvelope.classList.add('hidden');
+                    stageScrapbook.classList.remove('hidden');
+                    stageScrapbook.classList.add('flex');
+                    stageScrapbook.style.opacity = '0';
+                    setTimeout(() => {
+                        stageScrapbook.style.opacity = '1';
+                        currentStage = 2;
+                        isTransitioning = false;
+                    }, 50);
+                }, 300);
+            }, 400);
+        }
+
+        // Envelope click and keyboard activation (preventing Space scrolling)
+        envelopeCard.addEventListener('click', triggerEnvelopeAction);
+        envelopeCard.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                triggerEnvelopeAction();
+            }
+        });
+
+        // Sticker click handler
+        window.revealStickerMessage = function(index, message) {
+            initAudio();
+            playChimeSound();
+            createParticles(5);
+
+            stickerMsgBox.style.opacity = '0';
+            stickerMsgBox.style.transform = 'scale(0.95)';
+
+            setTimeout(() => {
+                stickerMsgText.textContent = message;
+                stickerMsgBox.style.opacity = '1';
+                stickerMsgBox.style.transform = 'scale(1)';
+            }, 150);
+        };
+
+        // Proceed to Final Card
+        toCardBtn.addEventListener('click', () => {
+            if (isTransitioning || currentStage !== 2) return;
+            isTransitioning = true;
+            initAudio();
+            playChimeSound();
+            createParticles(8);
+
+            stageScrapbook.classList.add('opacity-0', 'scale-95');
+            setTimeout(() => {
+                stageScrapbook.classList.add('hidden');
+                stageFinalCard.classList.remove('hidden');
+                stageFinalCard.classList.add('flex');
+                stageFinalCard.style.opacity = '0';
+                setTimeout(() => {
+                    stageFinalCard.style.opacity = '1';
+                    currentStage = 3;
+                    isTransitioning = false;
+                    startTypewriter();
+                }, 50);
+            }, 300);
+        });
+
+        /* --- TYPEWRITER EFFECT (Robust with reduced-motion check and timer clearing) --- */
+        const typewriterText = document.getElementById('typewriterText');
+        const cursorSpan = document.getElementById('cursorSpan');
+
+        function startTypewriter() {
+            // Clear any active prior timeout/interval to avoid racing conflicts
+            if (typewriterTimer) {
+                clearInterval(typewriterTimer);
+                typewriterTimer = null;
+            }
+
+            typewriterText.textContent = "";
+            cursorSpan.style.display = "inline-block";
+            const textToType = CONFIG.centralMessage;
+
+            // If user prefers reduced motion, display text immediately and hide cursor
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                typewriterText.textContent = textToType;
+                cursorSpan.style.display = "none";
+                return;
+            }
+
+            let charIndex = 0;
+            typewriterTimer = setInterval(() => {
+                if (charIndex < textToType.length) {
+                    typewriterText.textContent += textToType.charAt(charIndex);
+                    charIndex++;
+                } else {
+                    clearInterval(typewriterTimer);
+                    typewriterTimer = null;
+                    // Hide cursor gently after typing completes
+                    setTimeout(() => {
+                        cursorSpan.style.display = "none";
+                    }, 1500);
+                }
+            }, 50);
+        }
+
+        // Replay Button
+        replayBtn.addEventListener('click', () => {
+            initAudio();
+            playChimeSound();
+            createParticles(6);
+            startTypewriter();
+        });
+    </script>
+</body>
+</html>
